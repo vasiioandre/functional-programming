@@ -1,7 +1,7 @@
-package com.homework.exercises;
+package org.endava.tmd.homework.exercises;
 
 import com.google.common.collect.ImmutableSet;
-import com.homework.utils.Utils;
+import org.endava.tmd.homework.utils.Utils;
 import org.junit.Ignore;
 import org.junit.Test;
 

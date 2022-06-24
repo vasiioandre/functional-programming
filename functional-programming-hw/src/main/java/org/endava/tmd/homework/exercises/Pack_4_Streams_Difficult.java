@@ -1,7 +1,7 @@
-package com.homework.exercises;
+package org.endava.tmd.homework.exercises;
 
-import com.homework.utils.Employee;
-import com.homework.utils.Employees;
+import org.endava.tmd.homework.utils.Employee;
+import org.endava.tmd.homework.utils.Employees;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -11,17 +11,20 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import static com.shazam.shazamcrest.MatcherAssert.assertThat;
 import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
 import static java.util.Arrays.asList;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
 
 @SuppressWarnings("all")
 public class Pack_4_Streams_Difficult {
 
     private static final List<Employee> EMPLOYEES = Employees.allEmployees();
 
-    @Ignore
     @Test
     public void exercise_1_findFirst() {
         // find whether there are two employees with the same first name and surname and return the name
@@ -32,7 +35,7 @@ public class Pack_4_Streams_Difficult {
         assertThat(result, sameBeanAs("Holly Davies"));
     }
 
-    @Ignore
+
     @Test
     public void exercise_2_groupingBy_counting() {
         // find the total number of groups of at least 5 employees living close to each other

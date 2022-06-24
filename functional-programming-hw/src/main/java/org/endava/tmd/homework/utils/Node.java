@@ -1,4 +1,4 @@
-package com.homework.utils;
+package org.endava.tmd.homework.utils;
 
 @SuppressWarnings("unused")
 public class Node {

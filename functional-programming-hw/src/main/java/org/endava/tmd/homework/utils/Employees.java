@@ -1,4 +1,4 @@
-package com.homework.utils;
+package org.endava.tmd.homework.utils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -1,10 +1,10 @@
-package com.homework.utils;
+package org.endava.tmd.homework.utils;
 
 import lombok.EqualsAndHashCode;
 
 import java.util.Optional;
 
-import static com.homework.utils.Utils.notNull;
+import static org.endava.tmd.homework.utils.Utils.notNull;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @EqualsAndHashCode
