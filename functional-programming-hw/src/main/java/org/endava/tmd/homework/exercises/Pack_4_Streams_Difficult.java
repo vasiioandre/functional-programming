@@ -17,8 +17,7 @@ import static com.shazam.shazamcrest.MatcherAssert.assertThat;
 import static com.shazam.shazamcrest.matcher.Matchers.sameBeanAs;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.*;
 
 @SuppressWarnings("all")
 public class Pack_4_Streams_Difficult {
@@ -31,6 +30,14 @@ public class Pack_4_Streams_Difficult {
         // the solution has to be a single statement, complexity O(n^2) is acceptable
 
         String result = null;
+        Set<String> items = new HashSet<>();
+
+        result = EMPLOYEES.stream()
+                .map(empl -> empl.getFirstName() + " " + empl.getSurname())
+                .filter(n -> !items.add(n))
+                .findFirst()
+                .map(Object::toString)
+                .orElse("");
 
         assertThat(result, sameBeanAs("Holly Davies"));
     }
@@ -43,8 +50,21 @@ public class Pack_4_Streams_Difficult {
         // you can collect to map and then stream over it, however the solution has to be a single statement
 
         long result = 0;
+//        System.out.println(EMPLOYEES.stream()
+//                .collect(Collectors.groupingBy(Employee::getFirstName, Collectors.counting())));
 
-        //TODO write your code here
+//        result = EMPLOYEES.stream()
+//                .collect(Collectors.groupingBy((empl -> empl.getHomeAddress().getPostCode().substring(0,2)), Collectors.counting()))
+//                .entrySet()
+//                .stream()
+//                .count();
+
+        result = EMPLOYEES.stream()
+                .collect(Collectors.groupingBy((empl -> empl.getHomeAddress().getPostCode().substring(0, 2)), Collectors.counting()))
+                .entrySet()
+                .stream()
+                .filter(group -> group.getValue() >= 5)
+                .count();
 
         assertThat(result, sameBeanAs(110L));
     }
