@@ -5,9 +5,12 @@ import org.endava.tmd.homework.utils.Employees;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+import java.nio.channels.AsynchronousSocketChannel;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -39,7 +42,7 @@ public class Pack_4_Streams_Difficult {
                 .map(Object::toString)
                 .orElse("");
 
-        assertThat(result, sameBeanAs("Holly Davies"));
+        assertThat(result, sameBeanAs("Jacob Mason"));
     }
 
 
@@ -50,14 +53,6 @@ public class Pack_4_Streams_Difficult {
         // you can collect to map and then stream over it, however the solution has to be a single statement
 
         long result = 0;
-//        System.out.println(EMPLOYEES.stream()
-//                .collect(Collectors.groupingBy(Employee::getFirstName, Collectors.counting())));
-
-//        result = EMPLOYEES.stream()
-//                .collect(Collectors.groupingBy((empl -> empl.getHomeAddress().getPostCode().substring(0,2)), Collectors.counting()))
-//                .entrySet()
-//                .stream()
-//                .count();
 
         result = EMPLOYEES.stream()
                 .collect(Collectors.groupingBy((empl -> empl.getHomeAddress().getPostCode().substring(0, 2)), Collectors.counting()))
@@ -69,19 +64,24 @@ public class Pack_4_Streams_Difficult {
         assertThat(result, sameBeanAs(110L));
     }
 
-    @Ignore
+
     @Test
     public void exercise_3_flatMap() {
         // find the total number of all different home and correspondence addresses
 
         long result = 0;
 
-        //TODO write your code here
+        result = EMPLOYEES.stream()
+                //the second parameter is optional, you need to get it
+                .flatMap(c -> Stream.of(c.getHomeAddress(), c.getCorrespondenceAddress().get()))
+                .distinct()
+                .count();
+
+        System.out.println(result);
 
         assertThat(result, sameBeanAs(1820L));
     }
 
-    @Ignore
     @Test
     public void exercise_4_groupingBy_summingInt() {
         // find how much in total each company pays (annually) to their employees, order result by amount
@@ -91,7 +91,14 @@ public class Pack_4_Streams_Difficult {
         DecimalFormat decimalFormat = new DecimalFormat("£#,###.00");
         List<String> result = null;
 
-        //TODO write your code here
+        result = EMPLOYEES.stream()
+                .collect(groupingBy(company -> company.getCompany().getName(),
+                        summingInt(salary -> salary.getSalary().intValue())))
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .map(s -> s.getKey() + " - " + decimalFormat.format(s.getValue()))
+                .collect(toList());
 
         assertThat(result, sameBeanAs(asList(
                 "Anglo American - £12,119,153.00",
@@ -107,7 +114,6 @@ public class Pack_4_Streams_Difficult {
         )));
     }
 
-    @Ignore
     @Test
     public void exercise_5_patternCompileSplitAsStream() {
         // count the instances of words and output a list of formatted strings
@@ -119,7 +125,13 @@ public class Pack_4_Streams_Difficult {
         String string = "dog" + "\n" + "bird" + "\n" + "cat" + "\n" + "cat" + "\n" + "dog" + "\n" + "cat";
         List<String> result = null;
 
-        //TODO write your code here
+        result = Pattern.compile("\n").splitAsStream(string)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Long>comparingByKey())
+                .map(s -> s.getKey() + " - " + s.getValue())
+                .collect(toList());
 
         assertThat(result, sameBeanAs(asList(
                 "bird - 1",
@@ -128,7 +140,6 @@ public class Pack_4_Streams_Difficult {
         )));
     }
 
-    @Ignore
     @Test
     public void exercise_6_mapToLong() {
         // the rows and columns of the chess board are assigned arbitrary numbers (instead of letters and digits)
@@ -137,14 +148,17 @@ public class Pack_4_Streams_Difficult {
         // calculate the sum of values of all squares
         int[] rows = {6432, 8997, 8500, 7036, 9395, 9372, 9715, 9634};
         int[] columns = {6199, 9519, 6745, 8864, 8788, 7322, 7341, 7395};
+
         long result = 0;
 
-        //TODO write your code here
+        result = Arrays.stream(rows)
+                .flatMap(a -> Arrays.stream(columns).map(b -> a * b))
+                .mapToLong(n -> n)
+                .reduce(0, (a, b) -> a + b);
 
         assertThat(result, sameBeanAs(4294973013L));
     }
 
-    @Ignore
     @Test
     public void exercise_7_randomLongs_concat_toArray() {
         // concatenate two random streams of numbers (seed is fixed for testing purposes),
@@ -156,7 +170,14 @@ public class Pack_4_Streams_Difficult {
         IntStream ints = new Random(0).ints(10);
         int[] result = null;
 
-        //TODO write your code here
+        result = LongStream.concat(longs, ints.asLongStream())
+                .boxed()
+                .map(n -> Math.abs(n))
+                .sorted()
+                .skip(5)
+                .limit(10)
+                .map(n -> n % 1000)
+                .mapToInt(x -> Math.toIntExact(x)).toArray();
 
         assertThat(result, sameBeanAs(new long[]{106, 266, 402, 858, 313, 688, 303, 137, 766, 896}));
     }
